@@ -1,0 +1,4 @@
+beautifulsoup4==4.11.1
+requests==2.24.0
+argparse==1.4.0
+PuLP==2.7.0
