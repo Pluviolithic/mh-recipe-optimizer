@@ -1,23 +1,29 @@
 from xml.dom import minidom
-import re
+from os.path import exists
 from pulp import *
+import argparse
+import re
 
-parser = minidom.parse('minershaven.xml')
-prob = LpProblem('minimize MH cost', LpMinimize)
+parser = argparse.ArgumentParser(
+    description = 'Optimize the cost of a supersitious item in Miners Haven.'
+)
+parser.add_argument('item', type=str, help='The item to optimize for.', nargs='+')
+parser.add_argument('-a', '--advanced', action='store_true', help='Use advanced reborns.')
+parser.add_argument('-r', '--rarity', action='store_true', help='Use rarity as weight.')
+parser.add_argument('-s', '--shards', action='store_true', help='Use shards as weight.')
+
+args = parser.parse_args()
 
 categories = [
-    'wind',
+    'aether',
     'water',
-    'grass',
+    'earth',
     'fire',
-    'spirit',
-    'death',
+    'order',
+    'entropy',
 ]
 
-items = []
-rarities = {}
 categoryDictionaries = {}
-
 for category in categories:
     categoryDictionaries[category] = {}
 
@@ -30,40 +36,65 @@ def getNodeText(node):
     return ''.join(result)
  
 def main():
-    input = []
-    
-    useAdvancedReborns = False
-    useRarityAsWeight = False
-    slipstreams = []
+    price = []
+    items = []
     exclude = []
+    rarities = {}
+    
+    itemToOptimize = ' '.join(args.item)
+    
+    exclusionsFile = open('exclude.txt', 'r')
+    for line in exclusionsFile:
+        if line.startswith('//') or len(line.strip()) == 0:
+            continue
+        exclude.append(line.replace('\n', ''))
+    
+    if not exists('minershaven.xml'):
+        os.system('python3 ScrapeFandom\\ScrapeFandom.py minershaven')
+    
+    parser = minidom.parse('minershaven.xml')
+    prob = LpProblem('minimize MH cost', LpMinimize)
 
     for element in parser.getElementsByTagName('text'):
         elementText = getNodeText(element)
         itemName = getNodeText(element.parentNode.parentNode.getElementsByTagName('title')[0])
-        if not '|elements = {{Elements' in elementText or 'Category:Superstitious' in elementText:
+        
+        if not '|elements = {{Elements' in elementText:
             continue
-        if 'Category:Slipstream' in elementText and itemName not in slipstreams:
-            continue
-        if 'Category:Advanced Reborn' in elementText and not useAdvancedReborns:
-            print("Skipping advanced reborn: " + itemName)
+        if 'Category:Advanced Reborn' in elementText and not args.advanced:
             continue
         if itemName in exclude:
             continue
         
         relevantText = re.compile('\|elements[^\}\}]*', re.U).search(elementText).group(0)
+        integers = re.findall(r'-?\d+', relevantText, re.U)
+        
+        if 'Category:Superstitious' in elementText:
+            if itemName == itemToOptimize:
+                price = [int(i) for i in integers]
+            continue
+        
+        print(itemName)
+        
         shardCostText = re.compile('\|cost[^\n]*', re.U).search(elementText).group(0)
         rarityText = re.compile('\|rarity[^\n]*', re.U).search(elementText).group(0)
-        
-        integers = re.findall(r'-?\d+', relevantText, re.U)
-        rarity = re.search(r'\d+', rarityText, re.U).group(0)
+        shardCost = int(re.search(r'\d+', shardCostText, re.U).group(0))
+        rarity = int(re.search(r'\d+', rarityText, re.U).group(0))
         
         for i in range(len(categories)):
             categoryDictionaries[categories[i]][itemName] = int(integers[i])
+            
         items.append(itemName)
-        if useRarityAsWeight:
-            rarities[itemName] = 1/int(rarity)
+        
+        if args.rarity:
+            rarities[itemName] = 1/rarity
+        elif args.shards:
+            rarities[itemName] = shardCost
         else:
             rarities[itemName] = 1
+            
+    if len(price) == 0:
+        return
         
     vars = LpVariable.dicts('elemenet', items, cat=LpInteger, lowBound=0)
     prob += (
@@ -72,10 +103,10 @@ def main():
 
     for i in range(len(categories)):
         prob += (
-            lpSum(categoryDictionaries[categories[i]][j] * vars[j] for j in items) >= input[i],
+            lpSum(categoryDictionaries[categories[i]][j] * vars[j] for j in items) >= price[i],
             f'{categories[i]} requirement'
         )
-        
+    
     prob.solve()
     print("Status:", LpStatus[prob.status])
     for v in prob.variables():

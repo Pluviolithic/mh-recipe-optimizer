@@ -1,0 +1,18 @@
+// excluding the slipstreams by default, change as needed
+// put only the name and exactly the name on each line
+// this is a comment
+
+The Great Parasite
+Pulsar Octagnium Mine
+Incendium Mine
+Utopian Refiner
+Dystopian Refiner
+Nature's Enchantment
+Burst Refiner
+Ore Supernova
+The Grand Prism
+Oblivion Weaver
+Neutropian Refiner
+Suitopian Refiner
+Behemoth Blossom
+Orbital Cataclysm
