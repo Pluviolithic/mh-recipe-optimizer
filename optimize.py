@@ -45,6 +45,7 @@ def main():
     exclude = []
     rarities = {}
     
+    slipstreamItem = ''
     itemToOptimize = ' '.join(args.item)
     
     exclusionsFile = open('exclude.txt', 'r')
@@ -76,6 +77,16 @@ def main():
         if 'Category:Superstitious' in elementText:
             if itemName == itemToOptimize:
                 price = [int(i) for i in integers]
+            continue
+        
+        if 'Category:Slipstream' in elementText:
+            slipstreamItem = itemName
+            rarities[itemName] = 0
+            for i in range(len(categories)):
+                categoryDictionaries[categories[i]][itemName] = int(integers[i])
+            
+            items.append(itemName)
+            itemShardCosts[itemName] = (0, 0)
             continue
         
         shardSellText = re.compile('\|sell[^\n]*', re.U).search(elementText).group(0)
@@ -120,6 +131,9 @@ def main():
             lpSum(categoryDictionaries[categoriesInUse[i]][j] * vars[j] for j in items) >= price[i],
             f'{categoriesInUse[i]} requirement'
         )
+    
+    if slipstreamItem != '':
+        prob += (vars[slipstreamItem]) <= 1
         
     if args.p__problem:
         print(prob)
