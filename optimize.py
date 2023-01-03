@@ -66,7 +66,7 @@ def main():
         
         if not '|elements = {{Elements' in elementText:
             continue
-        if 'Category:Advanced Reborn' in elementText and not args.advanced:
+        if '[[Category:Advanced Reborn]]' in elementText and not args.advanced:
             continue
         if itemName in exclude:
             continue
@@ -74,12 +74,12 @@ def main():
         relevantText = re.compile('\|elements[^\}\}]*', re.U).search(elementText).group(0)
         integers = re.findall(r'-?\d+', relevantText, re.U)
         
-        if 'Category:Superstitious' in elementText:
+        if '[[Category:Superstitious]]' in elementText:
             if itemName == itemToOptimize:
                 price = [int(i) for i in integers]
             continue
         
-        if 'Category:Slipstream' in elementText:
+        if '[[Category:Slipstream]]' in elementText:
             slipstreamItem = itemName
             rarities[itemName] = 0
             for i in range(len(categories)):
