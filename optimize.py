@@ -93,14 +93,14 @@ def main():
             
         items.append(itemName)
         
+        rarities[itemName] = 1
+        
         if args.rarity:
-            rarities[itemName] = 1/rarity
-        elif args.shards:
-            rarities[itemName] = shardSellValue
-        elif args.buy:
-            rarities[itemName] = shardBuyValue
-        else:
-            rarities[itemName] = 1
+            rarities[itemName] *= 1/rarity
+        if args.shards:
+            rarities[itemName] *= shardSellValue
+        if args.buy:
+            rarities[itemName] *= shardBuyValue
             
     if len(price) == 0:
         return

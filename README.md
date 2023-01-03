@@ -10,7 +10,7 @@
 
 ## Running the Script
 `Python3 optimize.py Full Item Name` (as of right now, the program does not accept partial or lowercase names).
-You can use arguments such as `-r` to optimize based on rarity, `-s` to optimize based on shard sell value, -b to optimize for shard buy cost, or `-a` to include advanced reborns. For those users who are interested in seeing more of what's going on under the hood, use the `-p` option and scroll up through the output. As of right now, you cannot do `-r` and `-s` or `-b` simultaneously. You may add items to an exclude list in `exclude.txt`. All the slipstreams are excluded by default. Feel free to modify as needed. Syntax rules for exclusion are explained in the file comments.
+You can use arguments such as `-r` to optimize based on rarity, `-s` to optimize based on shard sell value, -b to optimize for shard buy cost, or `-a` to include advanced reborns. For those users who are interested in seeing more of what's going on under the hood, use the `-p` option and scroll up through the output. Multiple flags to change weight (i.e. `-s` and `-b`) used simultaneously will work, but relative scaling in the game may cause it to yield unhelpful results. You may add items to an exclude list in `exclude.txt`. All the slipstreams are excluded by default. Feel free to modify as needed. Syntax rules for exclusion are explained in the file comments.
 
 ## Examples
 ```
