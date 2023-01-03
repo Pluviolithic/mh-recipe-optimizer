@@ -11,6 +11,7 @@
 * `Python3 optimize.py Full Item Name` (as of right now, the program does not accept partial or lowercase names)
     * You can use arguments such as `-r` to optimize based on rarity, `-s` to optimize based on shard cost, or `-a` to include advanced reborns.
     * As of right now, you cannot do `-r` and `-s` simultaneously.
+* You may add items to an exclude list in `exclude.txt`. All the slipstreams are excluded by default. Feel free to modify as needed. Syntax rules for exclusion are explained in the file comments.
 
 ## Examples
 ```
