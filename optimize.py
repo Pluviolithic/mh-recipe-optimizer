@@ -11,7 +11,9 @@ parser = argparse.ArgumentParser(
 parser.add_argument('item', type=str, help='The item to optimize for.', nargs='+')
 parser.add_argument('-a', '--advanced', action='store_true', help='Use advanced reborns.')
 parser.add_argument('-r', '--rarity', action='store_true', help='Use rarity as weight.')
-parser.add_argument('-s', '--shards', action='store_true', help='Use shards as weight.')
+parser.add_argument('-s', '--shards', action='store_true', help='Use item sell value in shards as weight.')
+parser.add_argument('-b', '--buy', action='store_true', help='Use item buy value in shards as weight.')
+parser.add_argument('-p' '--problem', action='store_true', help='Output the problem specifics.')
 
 args = parser.parse_args()
 
@@ -24,6 +26,7 @@ categories = [
     'entropy',
 ]
 
+itemShardCosts = {}
 categoryDictionaries = {}
 for category in categories:
     categoryDictionaries[category] = {}
@@ -75,10 +78,15 @@ def main():
                 price = [int(i) for i in integers]
             continue
         
-        shardCostText = re.compile('\|cost[^\n]*', re.U).search(elementText).group(0)
+        shardSellText = re.compile('\|sell[^\n]*', re.U).search(elementText).group(0)
+        shardBuyText = re.compile('\|cost[^\n]*', re.U).search(elementText).group(0)
         rarityText = re.compile('\|rarity[^\n]*', re.U).search(elementText).group(0)
-        shardCost = int(re.search(r'\d+', shardCostText, re.U).group(0))
+        
+        shardSellValue = int(re.search(r'\d+', shardSellText, re.U).group(0))
+        shardBuyValue = int(re.search(r'\d+', shardBuyText, re.U).group(0))
         rarity = int(re.search(r'\d+', rarityText, re.U).group(0))
+        
+        itemShardCosts[itemName] = (shardSellValue, shardBuyValue)
         
         for i in range(len(categories)):
             categoryDictionaries[categories[i]][itemName] = int(integers[i])
@@ -88,7 +96,9 @@ def main():
         if args.rarity:
             rarities[itemName] = 1/rarity
         elif args.shards:
-            rarities[itemName] = shardCost
+            rarities[itemName] = shardSellValue
+        elif args.buy:
+            rarities[itemName] = shardBuyValue
         else:
             rarities[itemName] = 1
             
@@ -99,19 +109,36 @@ def main():
     prob += (
         lpSum(i[1] * vars[i[0]] for i in rarities.items())
     )
-
+    
+    categoriesInUse = []
     for i in range(len(categories)):
+        if price[i] != 0:
+            categoriesInUse.append(categories[i])
+
+    for i in range(len(categoriesInUse)):
         prob += (
-            lpSum(categoryDictionaries[categories[i]][j] * vars[j] for j in items) >= price[i],
-            f'{categories[i]} requirement'
+            lpSum(categoryDictionaries[categoriesInUse[i]][j] * vars[j] for j in items) >= price[i],
+            f'{categoriesInUse[i]} requirement'
         )
+        
+    if args.p__problem:
+        print(prob)
+    
+    shardBuyCostSum = 0
+    shardSellCostSum = 0
     
     prob.solve()
     print("Status:", LpStatus[prob.status])
     for v in prob.variables():
         if v.varValue > 0:
             name = v.name.replace('elemenet_', '').replace('_', ' ')
-            print(name, "=", math.trunc(v.varValue))
+            truncVal = math.trunc(v.varValue)
+            print(name, "=", truncVal)
+            shardBuyCostSum += itemShardCosts[name][1] * truncVal
+            shardSellCostSum += itemShardCosts[name][0] * truncVal
+            
+    print('Total shard buy cost:', shardBuyCostSum)
+    print('Total shard sell amount:', shardSellCostSum)
            
 if __name__ == '__main__':
     main()
