@@ -2,6 +2,7 @@ from xml.dom import minidom
 from os.path import exists
 from pulp import *
 import argparse
+import math
 import re
 
 parser = argparse.ArgumentParser(
@@ -74,8 +75,6 @@ def main():
                 price = [int(i) for i in integers]
             continue
         
-        print(itemName)
-        
         shardCostText = re.compile('\|cost[^\n]*', re.U).search(elementText).group(0)
         rarityText = re.compile('\|rarity[^\n]*', re.U).search(elementText).group(0)
         shardCost = int(re.search(r'\d+', shardCostText, re.U).group(0))
@@ -111,7 +110,8 @@ def main():
     print("Status:", LpStatus[prob.status])
     for v in prob.variables():
         if v.varValue > 0:
-            print(v.name, "=", v.varValue)
+            name = v.name.replace('elemenet_', '').replace('_', ' ')
+            print(name, "=", math.trunc(v.varValue))
            
 if __name__ == '__main__':
     main()
