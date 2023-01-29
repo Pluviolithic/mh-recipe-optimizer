@@ -15,7 +15,7 @@ parser.add_argument('-r', '--rarity', action='store_true', help='Use rarity as w
 parser.add_argument('-s', '--shards', action='store_true', help='Use item sell value in shards as weight.')
 parser.add_argument('-b', '--buy', action='store_true', help='Use item buy value in shards as weight.')
 parser.add_argument('-v' '--verbose', action='store_true', help='Output all the problem data.')
-parser.add_argument('-f', '--force', help='Force include the provided items.', nargs='+')
+parser.add_argument('-f', '--force', help='Force the provided items to be considered.', default=[], nargs='+')
 
 args = parser.parse_args()
 
@@ -45,9 +45,9 @@ def main():
     price = []
     items = []
     exclude = []
-    rarities = {}
+    slipstreamItems = []
     
-    slipstreamItem = ''
+    rarities = {}
     itemToOptimize = ' '.join(args.item)
     
     exclusionsFile = open('exclude.txt', 'r')
@@ -68,10 +68,14 @@ def main():
         
         if not '|elements = {{Elements' in elementText:
             continue
-        if '[[Category:Advanced Reborn]]' in elementText and not args.advanced:
-            continue
-        if itemName in exclude:
-            continue
+        
+        if itemName not in args.force:
+            if '[[Category:Advanced Reborn]]' in elementText and not args.advanced:
+                continue
+            elif '[[Category:Slipstream]]' in elementText:
+                continue
+            elif itemName in exclude:
+                continue
         
         relevantText = re.compile('\|elements[^\}\}]*', re.U).search(elementText).group(0)
         integers = re.findall(r'-?\d+', relevantText, re.U)
@@ -82,12 +86,12 @@ def main():
             continue
         
         if '[[Category:Slipstream]]' in elementText:
-            slipstreamItem = itemName
             rarities[itemName] = 0
             for i in range(len(categories)):
                 categoryDictionaries[categories[i]][itemName] = int(integers[i])
             
             items.append(itemName)
+            slipstreamItems.append(itemName)
             itemShardCosts[itemName] = (0, 0)
             continue
         
@@ -117,7 +121,7 @@ def main():
             
     if len(price) == 0:
         return    
-        
+
     vars = pulp.LpVariable.dicts('elemenet', items, cat=pulp.LpInteger, lowBound=0)
     prob += (
         pulp.lpSum(i[1] * vars[i[0]] for i in rarities.items())
@@ -136,7 +140,7 @@ def main():
             f'{categoriesInUse[i]} requirement'
         )
     
-    if slipstreamItem != '':
+    for slipstreamItem in slipstreamItems:
         prob += (vars[slipstreamItem]) <= 1
     
     if args.v__verbose:
