@@ -1,9 +1,10 @@
 from xml.dom import minidom
-from os.path import exists
 from pulp import *
+
 import argparse
 import math
 import re
+import os
 
 parser = argparse.ArgumentParser(
     description = 'Optimize the cost of a supersitious item in Miners Haven.'
@@ -54,8 +55,8 @@ def main():
             continue
         exclude.append(line.replace('\n', ''))
     
-    if not exists('minershaven.xml'):
-        os.system('python3 ScrapeFandom\\ScrapeFandom.py minershaven')
+    if not os.path.exists('minershaven.xml'):
+        os.system('python3 ' + os.path.join('ScrapeFandom', 'ScrapeFandom.py') + ' minershaven')
     
     parser = minidom.parse('minershaven.xml')
     prob = LpProblem('minimize MH cost', LpMinimize)
