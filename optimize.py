@@ -1,8 +1,8 @@
 from xml.dom import minidom
-from pulp import *
 
 import argparse
 import math
+import pulp
 import re
 import os
 
@@ -14,7 +14,8 @@ parser.add_argument('-a', '--advanced', action='store_true', help='Use advanced 
 parser.add_argument('-r', '--rarity', action='store_true', help='Use rarity as weight.')
 parser.add_argument('-s', '--shards', action='store_true', help='Use item sell value in shards as weight.')
 parser.add_argument('-b', '--buy', action='store_true', help='Use item buy value in shards as weight.')
-parser.add_argument('-p' '--problem', action='store_true', help='Output the problem specifics.')
+parser.add_argument('-v' '--verbose', action='store_true', help='Output all the problem data.')
+parser.add_argument('-f', '--force', help='Force include the provided items.', nargs='+')
 
 args = parser.parse_args()
 
@@ -40,7 +41,7 @@ def getNodeText(node):
             result.append(node.data)
     return ''.join(result)
  
-def main():
+def main(): 
     price = []
     items = []
     exclude = []
@@ -59,7 +60,7 @@ def main():
         os.system('python3 ' + os.path.join('ScrapeFandom', 'ScrapeFandom.py') + ' minershaven')
     
     parser = minidom.parse('minershaven.xml')
-    prob = LpProblem('minimize MH cost', LpMinimize)
+    prob = pulp.LpProblem('Minimize_Item_Cost', pulp.LpMinimize)
 
     for element in parser.getElementsByTagName('text'):
         elementText = getNodeText(element)
@@ -115,11 +116,11 @@ def main():
             rarities[itemName] *= shardBuyValue
             
     if len(price) == 0:
-        return
+        return    
         
-    vars = LpVariable.dicts('elemenet', items, cat=LpInteger, lowBound=0)
+    vars = pulp.LpVariable.dicts('elemenet', items, cat=pulp.LpInteger, lowBound=0)
     prob += (
-        lpSum(i[1] * vars[i[0]] for i in rarities.items())
+        pulp.lpSum(i[1] * vars[i[0]] for i in rarities.items())
     )
     
     updatedPrice = []
@@ -131,21 +132,22 @@ def main():
 
     for i in range(len(categoriesInUse)):
         prob += (
-            lpSum(categoryDictionaries[categoriesInUse[i]][j] * vars[j] for j in items) >= updatedPrice[i],
+            pulp.lpSum(categoryDictionaries[categoriesInUse[i]][j] * vars[j] for j in items) >= updatedPrice[i],
             f'{categoriesInUse[i]} requirement'
         )
     
     if slipstreamItem != '':
         prob += (vars[slipstreamItem]) <= 1
-        
-    if args.p__problem:
+    
+    if args.v__verbose:
         print(prob)
+        prob.solve()
+        print("Status:", pulp.LpStatus[prob.status], "\n")
+    else:
+        prob.solve(pulp.PULP_CBC_CMD(msg=0))
     
     shardBuyCostSum = 0
     shardSellCostSum = 0
-    
-    prob.solve()
-    print("Status:", LpStatus[prob.status])
     for v in prob.variables():
         if v.varValue > 0:
             name = v.name.replace('elemenet_', '').replace('_', ' ')
