@@ -122,14 +122,16 @@ def main():
         lpSum(i[1] * vars[i[0]] for i in rarities.items())
     )
     
+    updatedPrice = []
     categoriesInUse = []
     for i in range(len(categories)):
         if price[i] != 0:
+            updatedPrice.append(price[i])
             categoriesInUse.append(categories[i])
 
     for i in range(len(categoriesInUse)):
         prob += (
-            lpSum(categoryDictionaries[categoriesInUse[i]][j] * vars[j] for j in items) >= price[i],
+            lpSum(categoryDictionaries[categoriesInUse[i]][j] * vars[j] for j in items) >= updatedPrice[i],
             f'{categoriesInUse[i]} requirement'
         )
     
