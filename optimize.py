@@ -141,7 +141,7 @@ def main():
         return    
 
     # set up item weights in the problem
-    vars = pulp.LpVariable.dicts('elemenet', items, cat=pulp.LpInteger, lowBound=0)
+    vars = pulp.LpVariable.dicts('element', items, cat=pulp.LpInteger, lowBound=0)
     prob += (
         pulp.lpSum(i[1] * vars[i[0]] for i in rarities.items())
     )
@@ -175,7 +175,7 @@ def main():
     shardSellCostSum = 0
     for v in prob.variables():
         if v.varValue > 0:
-            name = v.name.replace('elemenet_', '').replace('_', ' ')
+            name = v.name.replace('element_', '').replace('_', ' ')
             truncVal = math.trunc(v.varValue)
             print(name, "=", truncVal)
             shardBuyCostSum += itemShardCosts[name][1] * truncVal
