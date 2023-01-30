@@ -1,18 +1,132 @@
-// excluding the slipstreams by default, change as needed
-// put only the name and exactly the name on each line
-// this is a comment
-
-The Great Parasite
-Pulsar Octagnium Mine
-Incendium Mine
-Utopian Refiner
-Dystopian Refiner
-Nature's Enchantment
-Burst Refiner
-Ore Supernova
-The Grand Prism
-Oblivion Weaver
-Neutropian Refiner
-Suitopian Refiner
-Behemoth Blossom
-Orbital Cataclysm
+// To exclude an item, simply remove the // before it.
+// To un-exclude an item, just put the // back. :)
+//
+//
+//
+// Aether Refinery
+// Ambrosia Fountain
+// Ancient Temple
+// Apollium Mine
+// Arcane Lightning
+// Astral Predictor
+// Atlantic Monolith
+// Atomium Mine
+// Azure Refiner
+// Behemoth Blossom
+// Big Alberto
+// Big Bad Blaster
+// Big Bertha
+// Black Dwarf
+// Blind Justice
+// Blue Supergiant
+// Breech Loader
+// Burst Refiner
+// Clockwork
+// Cooling Chamber
+// Crystal Shrine
+// Crystallized System
+// Daestrophe
+// Dark Magic
+// Delta Phantom
+// Desert Monument
+// Draedon's Gauntlet
+// Dragon Blaster
+// Dragonglass Mine
+// Dreamer's Anguish
+// Dreamer's Blight
+// Dreamer's Fright
+// Dreamer's Might
+// Dystopian Refiner
+// Elysium Solemnity
+// Enchanted Library
+// Eternal Journey
+// Father of Freon
+// Flaming Schrodinger
+// Fractured Reality
+// Frigid Dystopia
+// Frozen Justice
+// Garden of Gaia
+// Gate of Eclipse
+// Gravitational Gearwork
+// Green Tea Latte
+// Guardian of the Gate
+// Hades' Palace
+// Havium Mine
+// Igneous Forge
+// Incendium Mine
+// Industrial Firecrystal Mine
+// Industrial Scarab
+// Invasive Cyberlord
+// Lightningbolt Refiner
+// Massive Diamond Mine
+// Meralin's Sorcery
+// Methuselah's Mask
+// Midas Blaster
+// Mineral Wheel
+// Morning Star
+// Nature's Enchantment
+// Nature's Grip
+// Neutropian Refiner
+// Newtonic Corroder
+// Newtonium Mine
+// Northern Lights
+// Nova Star
+// Nuclear Stronghold
+// Oblivion Weaver
+// Optic Origin
+// Orbital Cataclysm
+// Ore Hypernova
+// Ore Illuminator
+// Ore Sawmill
+// Ore Skillet
+// Ore Supernova
+// Palladium Drill
+// Pandora's Box
+// Phase Processor
+// Phase Refiner
+// Pilotite Mine
+// Pizza Blaster
+// Plasma Scanner
+// Precursor Furnace
+// Precursor Mine
+// Pulsar Octagnium Mine
+// Quantum Ore Cleaner
+// Railgun Cannon
+// Red Giant
+// Righteous Will
+// Sage Redeemer
+// Sakura Garden
+// Scorching Heat
+// Scorpium Mine
+// Shard Park
+// Skyliner Flux
+// Solar Flare
+// Son of Poison
+// Spirit of Fire
+// Stardust Pulsar
+// Suitopian Refiner
+// Swag City
+// Sword God Shrine
+// Symmetrium Mine
+// Tesla Resetter
+// The Abomination
+// The Catalyst
+// The Death Cap
+// The Fracture
+// The Grand Prism
+// The Great Parasite
+// The Heart of Void
+// The Hourglass
+// The Sporest
+// Timeless Enhancement
+// Toxic Waste Disposal
+// Tyrant's Throne
+// Utopian Refiner
+// Vampire Spore
+// Venomshank
+// Virtual Enhancer
+// Vortex Chamber
+// Vulcan's Grasp
+// Vulcan's Wrath
+// Wild Spore
+// Yunium Mine
