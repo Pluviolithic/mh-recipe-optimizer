@@ -8,6 +8,7 @@
 * Change directory into the cloned project (e.g. `cd mh-recipe-optimizer`)
 * Run `git submodule update --init --recursive`.
 * Finally, run `pip install -r requirements.txt` to add the Python dependencies for the project.
+  * If you don't wish to install the requirements globally, run `make env`.
 
 ## Running the Script
 
