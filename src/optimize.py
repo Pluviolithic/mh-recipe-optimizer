@@ -38,23 +38,23 @@ def create_xml_file() -> None:
         else:
             break
 
-        # Exports XML file of all the pages scraped
-        payload = {
-            "catname": "",
-            "pages": pages_as_string,
-            "curonly": "1",
-            "wpDownload": 1,
-            "wpEditToken": "+\\",
-            "title": "Special:Export",
-        }
+    # Exports XML file of all the pages scraped
+    payload = {
+        "catname": "",
+        "pages": pages_as_string,
+        "curonly": "1",
+        "wpDownload": 1,
+        "wpEditToken": "+\\",
+        "title": "Special:Export",
+    }
 
-        response = requests.post(
-            "https://minershaven.fandom.com/wiki/Special:Export", data=payload
-        )
+    response = requests.post(
+        "https://minershaven.fandom.com/wiki/Special:Export", data=payload
+    )
 
-        data = response.content
-        with open("minershaven.xml", "wb") as s:
-            s.write(data)
+    data = response.content
+    with open("minershaven.xml", "wb") as s:
+        s.write(data)
 
     print()
 
