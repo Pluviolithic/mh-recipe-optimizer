@@ -1,0 +1,7 @@
+# Some entries commented out to provide an example
+exclude = [
+    #"Vulcan's Grasp",
+    # "Vulcan's Wrath",
+    # "Wild Spore",
+    # "Yunium Mine",
+]
